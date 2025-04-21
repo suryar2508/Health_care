@@ -1,7 +1,6 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Calendar, Prescription, Database } from "lucide-react";
+import { Heart, Calendar, prescription, Database } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const Index = () => {
       description: "Schedule, reschedule, or cancel appointments with healthcare professionals seamlessly.",
     },
     {
-      icon: Prescription,
+      icon: prescription,
       title: "Prescription Tracking",
       description: "Keep track of medications, dosages, and reminders to never miss taking your medicine.",
     },

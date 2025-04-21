@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -7,7 +6,7 @@ import {
   Calendar,
   User,
   Users,
-  Prescription,
+  prescription,
   Heart,
   Bell,
   Settings,
@@ -57,7 +56,7 @@ const SideBar = ({
     { icon: Home, label: "Dashboard", href: "/", roles: ["Patient", "Doctor", "Admin"] },
     { icon: Heart, label: "Health Monitoring", href: "/health-monitoring", roles: ["Patient", "Doctor"] },
     { icon: Calendar, label: "Appointments", href: "/appointments", roles: ["Patient", "Doctor", "Admin"] },
-    { icon: Prescription, label: "Prescriptions", href: "/prescriptions", roles: ["Patient", "Doctor"] },
+    { icon: prescription, label: "Prescriptions", href: "/prescriptions", roles: ["Patient", "Doctor"] },
     { icon: User, label: "My Profile", href: "/profile", roles: ["Patient", "Doctor", "Admin"] },
     { icon: Bell, label: "Notifications", href: "/notifications", roles: ["Patient", "Doctor", "Admin"] },
     { icon: Users, label: "Patients", href: "/patients", roles: ["Doctor", "Admin"] },
