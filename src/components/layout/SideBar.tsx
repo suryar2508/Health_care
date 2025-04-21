@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -6,7 +7,7 @@ import {
   Calendar,
   User,
   Users,
-  prescription,
+  FileText, // Changed from prescription to FileText as a suitable replacement
   Heart,
   Bell,
   Settings,
@@ -56,7 +57,7 @@ const SideBar = ({
     { icon: Home, label: "Dashboard", href: "/", roles: ["Patient", "Doctor", "Admin"] },
     { icon: Heart, label: "Health Monitoring", href: "/health-monitoring", roles: ["Patient", "Doctor"] },
     { icon: Calendar, label: "Appointments", href: "/appointments", roles: ["Patient", "Doctor", "Admin"] },
-    { icon: prescription, label: "Prescriptions", href: "/prescriptions", roles: ["Patient", "Doctor"] },
+    { icon: FileText, label: "Prescriptions", href: "/prescriptions", roles: ["Patient", "Doctor"] }, // Changed from prescription to FileText
     { icon: User, label: "My Profile", href: "/profile", roles: ["Patient", "Doctor", "Admin"] },
     { icon: Bell, label: "Notifications", href: "/notifications", roles: ["Patient", "Doctor", "Admin"] },
     { icon: Users, label: "Patients", href: "/patients", roles: ["Doctor", "Admin"] },
