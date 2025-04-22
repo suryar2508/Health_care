@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react"; 
 import { useToast } from "@/hooks/use-toast";
+import { mockPrescriptions } from "@/utils/mockData";
+import { Badge } from "@/components/ui/badge";
 
 const Prescriptions = () => {
   const { toast } = useToast();
@@ -12,46 +14,11 @@ const Prescriptions = () => {
     localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}") : null
   );
 
-  // Mock prescription data - in real app, this would come from Supabase
-  const prescriptionsList = [
-    { 
-      id: 1, 
-      medication: "Amoxicillin", 
-      dosage: "500mg", 
-      frequency: "3 times daily", 
-      startDate: "2025-04-10", 
-      endDate: "2025-04-20",
-      doctor: "Dr. Sarah Smith",
-      notes: "Take with food"
-    },
-    { 
-      id: 2, 
-      medication: "Lisinopril", 
-      dosage: "10mg", 
-      frequency: "Once daily", 
-      startDate: "2025-03-15", 
-      endDate: "2025-06-15",
-      doctor: "Dr. James Wilson",
-      notes: "Take in the morning"
-    },
-    { 
-      id: 3, 
-      medication: "Metformin", 
-      dosage: "850mg", 
-      frequency: "Twice daily", 
-      startDate: "2025-02-20", 
-      endDate: "2025-05-20",
-      doctor: "Dr. Sarah Smith",
-      notes: "Take with meals"
-    }
-  ];
-
   const handleViewPrescription = (id: number) => {
     toast({
       title: "Prescription details",
       description: `Viewing prescription ID: ${id}`,
     });
-    // In a real app with Supabase, you would show detailed prescription information
   };
 
   return (
@@ -68,12 +35,25 @@ const Prescriptions = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {prescriptionsList.map(prescription => (
+          {mockPrescriptions.map(prescription => (
             <Card key={prescription.id} className="overflow-hidden">
               <CardHeader className="bg-muted/50">
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  {prescription.medication}
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    {prescription.medication}
+                  </div>
+                  <Badge 
+                    variant={
+                      prescription.status === 'active' 
+                        ? 'default' 
+                        : prescription.status === 'completed' 
+                          ? 'secondary' 
+                          : 'destructive'
+                    }
+                  >
+                    {prescription.status}
+                  </Badge>
                 </CardTitle>
                 <CardDescription>{prescription.dosage}, {prescription.frequency}</CardDescription>
               </CardHeader>
@@ -107,18 +87,6 @@ const Prescriptions = () => {
             </Card>
           ))}
         </div>
-        
-        {prescriptionsList.length === 0 && (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-8">
-              <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">No Prescriptions</h3>
-              <p className="text-muted-foreground text-center mt-1">
-                You don't have any prescriptions yet.
-              </p>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </Layout>
   );

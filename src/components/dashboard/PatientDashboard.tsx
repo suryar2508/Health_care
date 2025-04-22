@@ -1,23 +1,15 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HealthVitalsCard } from "@/components/health/HealthVitalsCard";
 import { MedicineReminderList } from "@/components/health/MedicineReminderList";
 import { UpcomingAppointments } from "@/components/appointments/UpcomingAppointments";
-import { AreaChart, Bar, BarChart, ResponsiveContainer } from "recharts";
-
-// Mock data for the charts
-const healthData = [
-  { name: "Mon", systolic: 125, diastolic: 85, heart: 75 },
-  { name: "Tue", systolic: 128, diastolic: 82, heart: 72 },
-  { name: "Wed", systolic: 130, diastolic: 88, heart: 80 },
-  { name: "Thu", systolic: 120, diastolic: 80, heart: 70 },
-  { name: "Fri", systolic: 125, diastolic: 84, heart: 74 },
-  { name: "Sat", systolic: 132, diastolic: 86, heart: 76 },
-  { name: "Sun", systolic: 126, diastolic: 82, heart: 72 },
-];
+import { mockHealthMetrics, mockAppointments } from "@/utils/mockData";
+import { AreaChart, Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Area } from "recharts";
 
 const PatientDashboard = () => {
+  // Get the latest health metric
+  const latestMetric = mockHealthMetrics[0];
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
@@ -36,35 +28,49 @@ const PatientDashboard = () => {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <HealthVitalsCard
               title="Blood Pressure"
-              value="125/82"
+              value={`${latestMetric.bloodPressure.systolic}/${latestMetric.bloodPressure.diastolic}`}
               unit="mmHg"
-              status="normal"
+              status={
+                latestMetric.bloodPressure.systolic < 120 && latestMetric.bloodPressure.diastolic < 80 
+                  ? "normal" 
+                  : latestMetric.bloodPressure.systolic >= 140 || latestMetric.bloodPressure.diastolic >= 90 
+                    ? "critical" 
+                    : "warning"
+              }
               icon="heart"
-              change="3% higher than last week"
+              change="Based on last reading"
             />
             <HealthVitalsCard
               title="Heart Rate"
-              value="72"
+              value={latestMetric.heartRate.toString()}
               unit="bpm"
-              status="normal"
+              status={
+                latestMetric.heartRate >= 60 && latestMetric.heartRate <= 100 
+                  ? "normal" 
+                  : "warning"
+              }
               icon="heart"
-              change="Stable compared to last week"
+              change="Current reading"
             />
             <HealthVitalsCard
               title="Blood Oxygen"
-              value="98"
+              value={latestMetric.bloodOxygen.toString()}
               unit="%"
-              status="normal"
+              status={latestMetric.bloodOxygen >= 95 ? "normal" : "critical"}
               icon="heart"
-              change="1% higher than last week"
+              change="Current reading"
             />
             <HealthVitalsCard
               title="Temperature"
-              value="36.8"
+              value={latestMetric.temperature.toString()}
               unit="°C"
-              status="normal"
+              status={
+                latestMetric.temperature >= 36.5 && latestMetric.temperature <= 37.5 
+                  ? "normal" 
+                  : "warning"
+              }
               icon="thermometer"
-              change="Normal range"
+              change="Current reading"
             />
           </div>
           
@@ -79,7 +85,7 @@ const PatientDashboard = () => {
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
-                    data={healthData}
+                    data={mockHealthMetrics}
                     margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                   >
                     <defs>
@@ -166,10 +172,36 @@ const PatientDashboard = () => {
         </TabsContent>
         
         <TabsContent value="health-metrics" className="space-y-4">
-          <h3 className="text-xl font-semibold">Health Metrics Details</h3>
-          <p className="text-muted-foreground">
-            A more detailed view of your health metrics will be shown here
-          </p>
+          <Card>
+            <CardHeader>
+              <CardTitle>Health Metrics History</CardTitle>
+              <CardDescription>Your health measurements over time</CardDescription>
+            </CardHeader>
+            <CardContent className="h-96">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={mockHealthMetrics}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="dateRecorded" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area 
+                    type="monotone" 
+                    dataKey="bloodPressure.systolic" 
+                    stroke="#8884d8" 
+                    fill="#8884d8" 
+                    name="Systolic BP"
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="bloodPressure.diastolic" 
+                    stroke="#82ca9d" 
+                    fill="#82ca9d" 
+                    name="Diastolic BP"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </TabsContent>
         
         <TabsContent value="appointments" className="space-y-4">
