@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MedicineReminderList } from "@/components/health/MedicineReminderList";
@@ -7,6 +6,8 @@ import { HealthMetricsGrid } from "./metrics/HealthMetricsGrid";
 import { WeeklyHealthMetrics } from "./overview/WeeklyHealthMetrics";
 import { HealthMetricsOverview } from "./metrics/HealthMetricsOverview";
 import { DietRecommendations } from "./diet/DietRecommendations";
+import { Button } from "@/components/ui/button";
+import { AppointmentsList } from "@/components/appointments/AppointmentsList";
 
 const PatientDashboard = () => {
   return (
@@ -58,10 +59,20 @@ const PatientDashboard = () => {
         </TabsContent>
         
         <TabsContent value="appointments" className="space-y-4">
-          <h3 className="text-xl font-semibold">All Appointments</h3>
-          <p className="text-muted-foreground">
-            A complete list of past and upcoming appointments will be shown here
-          </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-xl font-semibold">All Appointments</h3>
+                <p className="text-muted-foreground">
+                  Manage your scheduled appointments
+                </p>
+              </div>
+              <Button>
+                Schedule New Appointment
+              </Button>
+            </div>
+            <AppointmentsList />
+          </div>
         </TabsContent>
         
         <TabsContent value="prescriptions" className="space-y-4">
