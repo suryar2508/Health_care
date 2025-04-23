@@ -1,4 +1,3 @@
-
 // Health Metrics Types
 export interface HealthMetric {
   id: number;
@@ -161,3 +160,5 @@ export const mockPrescriptions: Prescription[] = [
     refillRequested: false
   }
 ];
+
+export { mockAppointments }; // Make sure mockAppointments is exported
