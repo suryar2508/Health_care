@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MedicineReminderList } from "@/components/health/MedicineReminderList";
@@ -8,6 +9,7 @@ import { HealthMetricsOverview } from "./metrics/HealthMetricsOverview";
 import { DietRecommendations } from "./diet/DietRecommendations";
 import { Button } from "@/components/ui/button";
 import { AppointmentsList } from "@/components/appointments/AppointmentsList";
+import { PrescriptionsList } from "./PrescriptionsList";
 
 const PatientDashboard = () => {
   return (
@@ -15,7 +17,7 @@ const PatientDashboard = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold tracking-tight">Patient Dashboard</h2>
       </div>
-      
+
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -23,10 +25,10 @@ const PatientDashboard = () => {
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="overview" className="space-y-4">
           <HealthMetricsGrid />
-          
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <WeeklyHealthMetrics />
             <Card className="col-span-3">
@@ -39,7 +41,7 @@ const PatientDashboard = () => {
               </CardContent>
             </Card>
           </div>
-          
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
@@ -53,11 +55,11 @@ const PatientDashboard = () => {
             <DietRecommendations />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="health-metrics" className="space-y-4">
           <HealthMetricsOverview />
         </TabsContent>
-        
+
         <TabsContent value="appointments" className="space-y-4">
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
@@ -74,12 +76,9 @@ const PatientDashboard = () => {
             <AppointmentsList />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="prescriptions" className="space-y-4">
-          <h3 className="text-xl font-semibold">All Prescriptions</h3>
-          <p className="text-muted-foreground">
-            A complete list of your prescriptions will be shown here
-          </p>
+          <PrescriptionsList />
         </TabsContent>
       </Tabs>
     </div>
