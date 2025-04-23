@@ -1,3 +1,4 @@
+
 // Health Metrics Types
 export interface HealthMetric {
   id: number;
@@ -161,4 +162,4 @@ export const mockPrescriptions: Prescription[] = [
   }
 ];
 
-export { mockAppointments }; // Make sure mockAppointments is exported
+// Removed the duplicate export of mockAppointments here
