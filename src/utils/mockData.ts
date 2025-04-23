@@ -35,6 +35,7 @@ export interface Prescription {
   doctor: string;
   notes?: string;
   status: 'active' | 'completed' | 'cancelled';
+  refillRequested?: boolean;
 }
 
 // Mock Health Metrics Data
@@ -117,7 +118,8 @@ export const mockPrescriptions: Prescription[] = [
     endDate: "2025-07-01",
     doctor: "Dr. Sarah Smith",
     notes: "Take in the morning",
-    status: "active"
+    status: "active",
+    refillRequested: false
   },
   {
     id: 2,
@@ -129,7 +131,8 @@ export const mockPrescriptions: Prescription[] = [
     endDate: "2025-10-01",
     doctor: "Dr. Emily Brown",
     notes: "Take with meals",
-    status: "active"
+    status: "active",
+    refillRequested: false
   },
   {
     id: 3,
@@ -141,7 +144,8 @@ export const mockPrescriptions: Prescription[] = [
     endDate: "2025-07-01",
     doctor: "Dr. James Wilson",
     notes: "Take with food",
-    status: "active"
+    status: "active",
+    refillRequested: false
   },
   {
     id: 4,
@@ -153,6 +157,7 @@ export const mockPrescriptions: Prescription[] = [
     endDate: "2025-03-22",
     doctor: "Dr. James Wilson",
     notes: "Course completed",
-    status: "completed"
+    status: "completed",
+    refillRequested: false
   }
 ];
