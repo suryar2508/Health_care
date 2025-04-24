@@ -26,8 +26,11 @@ export function PatientList({ patients, onSelectPatient }: PatientListProps) {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Age</TableHead>
+                <TableHead>Blood Group</TableHead>
+                <TableHead>Phone</TableHead>
                 <TableHead>Condition</TableHead>
                 <TableHead>Last Visit</TableHead>
                 <TableHead>Actions</TableHead>
@@ -36,8 +39,11 @@ export function PatientList({ patients, onSelectPatient }: PatientListProps) {
             <TableBody>
               {patients.map((patient) => (
                 <TableRow key={patient.id}>
+                  <TableCell>#{patient.id}</TableCell>
                   <TableCell className="font-medium">{patient.name}</TableCell>
                   <TableCell>{patient.age}</TableCell>
+                  <TableCell>{patient.bloodGroup}</TableCell>
+                  <TableCell>{patient.phoneNumber}</TableCell>
                   <TableCell>{patient.condition}</TableCell>
                   <TableCell>{patient.lastVisit}</TableCell>
                   <TableCell>

@@ -17,9 +17,15 @@ import { useToast } from "@/hooks/use-toast";
 export interface Patient {
   id: number;
   name: string;
-  age: number;
+  dateOfBirth: string;
+  age?: number;
+  gender: 'male' | 'female' | 'other';
+  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  phoneNumber: string;
+  address: string;
   condition: string;
   lastVisit: string;
+  medicalHistory?: string;
   notes?: string;
 }
 
@@ -41,9 +47,14 @@ export function PatientForm({
   const { toast } = useToast();
   const [formData, setFormData] = useState<Omit<Patient, "id">>({
     name: patient?.name || "",
-    age: patient?.age || 0,
+    dateOfBirth: patient?.dateOfBirth || "",
+    gender: patient?.gender || "other",
+    bloodGroup: patient?.bloodGroup || "O+",
+    phoneNumber: patient?.phoneNumber || "",
+    address: patient?.address || "",
     condition: patient?.condition || "",
     lastVisit: patient?.lastVisit || new Date().toISOString().split("T")[0],
+    medicalHistory: patient?.medicalHistory || "",
     notes: patient?.notes || ""
   });
 
@@ -68,13 +79,25 @@ export function PatientForm({
       return;
     }
 
+    // Calculate age from date of birth
+    if (formData.dateOfBirth) {
+      const birthDate = new Date(formData.dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      formData.age = age;
+    }
+
     onSubmit(formData);
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
@@ -95,16 +118,66 @@ export function PatientForm({
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="age" className="text-right">Age</Label>
+              <Label htmlFor="dateOfBirth" className="text-right">Date of Birth</Label>
               <Input
-                id="age"
-                name="age"
-                type="number"
-                value={formData.age}
+                id="dateOfBirth"
+                name="dateOfBirth"
+                type="date"
+                value={formData.dateOfBirth}
                 onChange={handleChange}
                 className="col-span-3"
-                min={0}
-                max={120}
+                required
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="gender" className="text-right">Gender</Label>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="bloodGroup" className="text-right">Blood Group</Label>
+              <select
+                id="bloodGroup"
+                name="bloodGroup"
+                value={formData.bloodGroup}
+                onChange={handleChange}
+                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2"
+              >
+                {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(group => (
+                  <option key={group} value={group}>{group}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="phoneNumber" className="text-right">Phone Number</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="col-span-3"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="text-right">Address</Label>
+              <Textarea
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="col-span-3"
+                rows={2}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -126,6 +199,17 @@ export function PatientForm({
                 value={formData.lastVisit}
                 onChange={handleChange}
                 className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="medicalHistory" className="text-right">Medical History</Label>
+              <Textarea
+                id="medicalHistory"
+                name="medicalHistory"
+                value={formData.medicalHistory}
+                onChange={handleChange}
+                className="col-span-3"
+                rows={3}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
