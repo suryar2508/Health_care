@@ -8,6 +8,8 @@ import { Patient, PatientForm } from "@/components/patients/PatientForm";
 import { DeletePatientDialog } from "@/components/patients/DeletePatientDialog";
 import { PatientSearchBar } from "@/components/patients/PatientSearchBar";
 import { PatientTable } from "@/components/patients/PatientTable";
+import { RecentPatientsTable } from "@/components/patients/RecentPatientsTable";
+import { CriticalPatientsTable } from "@/components/patients/CriticalPatientsTable";
 
 const Patients = () => {
   const { toast } = useToast();
@@ -16,7 +18,6 @@ const Patients = () => {
   );
   const [searchQuery, setSearchQuery] = useState("");
   
-  // State for patient data with complete Patient type
   const [patientsList, setPatientsList] = useState<Patient[]>([
     { 
       id: 1, 
@@ -48,21 +49,17 @@ const Patients = () => {
     }
   ]);
   
-  // State for dialogs
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
-  // Filter patients based on search query
   const filteredPatients = patientsList.filter(patient => 
     patient.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     patient.condition.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // CRUD Operations
   const handleAddPatient = (patientData: Omit<Patient, "id">) => {
-    // Generate a new ID (in a real app, this would come from the backend)
     const newId = patientsList.length > 0 
       ? Math.max(...patientsList.map(p => p.id)) + 1 
       : 1;
@@ -173,48 +170,11 @@ const Patients = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Age</TableHead>
-                        <TableHead>Condition</TableHead>
-                        <TableHead>Last Visit</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredPatients
-                        .filter(patient => {
-                          // Calculate if visit was within the last 7 days
-                          const visitDate = new Date(patient.lastVisit);
-                          const today = new Date();
-                          const sevenDaysAgo = new Date(today.setDate(today.getDate() - 7));
-                          return visitDate >= sevenDaysAgo;
-                        })
-                        .map(patient => (
-                          <TableRow key={patient.id}>
-                            <TableCell className="font-medium">{patient.name}</TableCell>
-                            <TableCell>{patient.age}</TableCell>
-                            <TableCell>{patient.condition}</TableCell>
-                            <TableCell>{patient.lastVisit}</TableCell>
-                            <TableCell>
-                              <div className="flex gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleViewPatient(patient.id)}>
-                                  Edit
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => openDeleteDialog(patient.id)}>
-                                  Delete
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      }
-                    </TableBody>
-                  </Table>
-                </div>
+                <RecentPatientsTable
+                  patients={filteredPatients}
+                  onView={handleViewPatient}
+                  onDelete={openDeleteDialog}
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -228,58 +188,17 @@ const Patients = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Age</TableHead>
-                        <TableHead>Condition</TableHead>
-                        <TableHead>Last Visit</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredPatients
-                        .filter(patient => {
-                          // This is just for demo - in a real app, you'd have a "critical" flag
-                          const criticalConditions = [
-                            "heart", "stroke", "cancer", "critical", "emergency", 
-                            "severe", "hypertension"
-                          ];
-                          return criticalConditions.some(cond => 
-                            patient.condition.toLowerCase().includes(cond)
-                          );
-                        })
-                        .map(patient => (
-                          <TableRow key={patient.id}>
-                            <TableCell className="font-medium">{patient.name}</TableCell>
-                            <TableCell>{patient.age}</TableCell>
-                            <TableCell>{patient.condition}</TableCell>
-                            <TableCell>{patient.lastVisit}</TableCell>
-                            <TableCell>
-                              <div className="flex gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleViewPatient(patient.id)}>
-                                  Edit
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => openDeleteDialog(patient.id)}>
-                                  Delete
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      }
-                    </TableBody>
-                  </Table>
-                </div>
+                <CriticalPatientsTable
+                  patients={filteredPatients}
+                  onView={handleViewPatient}
+                  onDelete={openDeleteDialog}
+                />
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
       </div>
 
-      {/* Add Patient Dialog */}
       <PatientForm
         isOpen={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
@@ -287,7 +206,6 @@ const Patients = () => {
         title="Add New Patient"
       />
 
-      {/* Edit Patient Dialog */}
       {selectedPatient && (
         <PatientForm
           isOpen={isEditDialogOpen}
@@ -301,7 +219,6 @@ const Patients = () => {
         />
       )}
 
-      {/* Delete Patient Dialog */}
       {selectedPatient && (
         <DeletePatientDialog
           isOpen={isDeleteDialogOpen}
