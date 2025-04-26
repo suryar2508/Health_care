@@ -1,122 +1,57 @@
+
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { Patient, PatientForm } from "@/components/patients/PatientForm";
 import { DeletePatientDialog } from "@/components/patients/DeletePatientDialog";
 import { PatientSearchBar } from "@/components/patients/PatientSearchBar";
 import { PatientTable } from "@/components/patients/PatientTable";
 import { RecentPatientsTable } from "@/components/patients/RecentPatientsTable";
 import { CriticalPatientsTable } from "@/components/patients/CriticalPatientsTable";
+import { usePatients } from "@/hooks/use-patients";
 
 const Patients = () => {
-  const { toast } = useToast();
-  const [userData, setUserData] = useState<{ name: string; role: string } | null>(
+  const [userData] = useState<{ name: string; role: string } | null>(
     localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}") : null
   );
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const [patientsList, setPatientsList] = useState<Patient[]>([
-    { 
-      id: 1, 
-      name: "John Doe",
-      dateOfBirth: "1980-01-01",
-      age: 45,
-      gender: "male",
-      bloodGroup: "O+",
-      phoneNumber: "+1 234-567-8901",
-      address: "123 Main St, City, State",
-      condition: "Hypertension",
-      lastVisit: "2025-04-15",
-      medicalHistory: "None",
-      notes: "Regular checkup required"
-    },
-    { 
-      id: 2, 
-      name: "Sarah Johnson",
-      dateOfBirth: "1990-05-15",
-      age: 32,
-      gender: "female",
-      bloodGroup: "A+",
-      phoneNumber: "+1 234-567-8902",
-      address: "456 Oak Ave, City, State",
-      condition: "Diabetes Type 2",
-      lastVisit: "2025-04-10",
-      medicalHistory: "Family history of diabetes",
-      notes: "Blood sugar monitoring"
-    }
-  ]);
-  
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+
+  const { 
+    patients: patientsList, 
+    addPatient, 
+    updatePatient, 
+    deletePatient, 
+    getPatientById 
+  } = usePatients();
 
   const filteredPatients = patientsList.filter(patient => 
     patient.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     patient.condition.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddPatient = (patientData: Omit<Patient, "id">) => {
-    const newId = patientsList.length > 0 
-      ? Math.max(...patientsList.map(p => p.id)) + 1 
-      : 1;
-    
-    const newPatient = { id: newId, ...patientData };
-    setPatientsList([...patientsList, newPatient]);
-    
-    toast({
-      title: "Patient added",
-      description: `${patientData.name} has been added to your patient list.`
-    });
-  };
-
-  const handleEditPatient = (patientData: Omit<Patient, "id">) => {
-    if (!selectedPatient) return;
-    
-    const updatedPatients = patientsList.map(patient => 
-      patient.id === selectedPatient.id 
-        ? { ...patient, ...patientData } 
-        : patient
-    );
-    
-    setPatientsList(updatedPatients);
-    
-    toast({
-      title: "Patient updated",
-      description: `${patientData.name}'s information has been updated.`
-    });
-  };
-
-  const handleDeletePatient = () => {
-    if (!selectedPatient) return;
-    
-    const filteredPatients = patientsList.filter(
-      patient => patient.id !== selectedPatient.id
-    );
-    
-    setPatientsList(filteredPatients);
-    
-    toast({
-      title: "Patient deleted",
-      description: `${selectedPatient.name} has been removed from your patient list.`
-    });
-    
-    setIsDeleteDialogOpen(false);
-  };
-
   const handleViewPatient = (patientId: number) => {
-    const patient = patientsList.find(p => p.id === patientId);
+    const patient = getPatientById(patientId);
     if (patient) {
       setSelectedPatient(patient);
       setIsEditDialogOpen(true);
     }
   };
 
+  const handleDeletePatient = () => {
+    if (!selectedPatient) return;
+    deletePatient(selectedPatient.id);
+    setIsDeleteDialogOpen(false);
+    setSelectedPatient(null);
+  };
+
   const openDeleteDialog = (patientId: number) => {
-    const patient = patientsList.find(p => p.id === patientId);
+    const patient = getPatientById(patientId);
     if (patient) {
       setSelectedPatient(patient);
       setIsDeleteDialogOpen(true);
@@ -202,7 +137,7 @@ const Patients = () => {
       <PatientForm
         isOpen={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
-        onSubmit={handleAddPatient}
+        onSubmit={addPatient}
         title="Add New Patient"
       />
 
@@ -213,7 +148,7 @@ const Patients = () => {
             setIsEditDialogOpen(false);
             setSelectedPatient(null);
           }}
-          onSubmit={handleEditPatient}
+          onSubmit={(patientData) => updatePatient(selectedPatient.id, patientData)}
           patient={selectedPatient}
           title={`Edit Patient: ${selectedPatient.name}`}
         />
