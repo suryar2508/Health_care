@@ -9,10 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { PersonalInfoFields } from "./form/PersonalInfoFields";
+import { ContactFields } from "./form/ContactFields";
+import { MedicalFields } from "./form/MedicalFields";
 
 export interface Patient {
   id: number;
@@ -71,7 +71,6 @@ export function PatientForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
     if (!formData.name.trim()) {
       toast({
         title: "Validation Error",
@@ -108,123 +107,9 @@ export function PatientForm({
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">Name</Label>
-              <Input
-                id="name"
-                name="name" 
-                value={formData.name}
-                onChange={handleChange}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="dateOfBirth" className="text-right">Date of Birth</Label>
-              <Input
-                id="dateOfBirth"
-                name="dateOfBirth"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="gender" className="text-right">Gender</Label>
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2"
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="bloodGroup" className="text-right">Blood Group</Label>
-              <select
-                id="bloodGroup"
-                name="bloodGroup"
-                value={formData.bloodGroup}
-                onChange={handleChange}
-                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2"
-              >
-                {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(group => (
-                  <option key={group} value={group}>{group}</option>
-                ))}
-              </select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phoneNumber" className="text-right">Phone Number</Label>
-              <Input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="address" className="text-right">Address</Label>
-              <Textarea
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="col-span-3"
-                rows={2}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="condition" className="text-right">Condition</Label>
-              <Input
-                id="condition"
-                name="condition"
-                value={formData.condition}
-                onChange={handleChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="lastVisit" className="text-right">Last Visit</Label>
-              <Input
-                id="lastVisit"
-                name="lastVisit"
-                type="date"
-                value={formData.lastVisit}
-                onChange={handleChange}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="medicalHistory" className="text-right">Medical History</Label>
-              <Textarea
-                id="medicalHistory"
-                name="medicalHistory"
-                value={formData.medicalHistory}
-                onChange={handleChange}
-                className="col-span-3"
-                rows={3}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="notes" className="text-right">Notes</Label>
-              <Textarea
-                id="notes"
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                className="col-span-3"
-                rows={3}
-              />
-            </div>
+            <PersonalInfoFields formData={formData} handleChange={handleChange} />
+            <ContactFields formData={formData} handleChange={handleChange} />
+            <MedicalFields formData={formData} handleChange={handleChange} />
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
