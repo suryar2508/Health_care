@@ -1,16 +1,15 @@
 
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Patient, PatientForm } from "@/components/patients/PatientForm";
 import { DeletePatientDialog } from "@/components/patients/DeletePatientDialog";
 import { PatientSearchBar } from "@/components/patients/PatientSearchBar";
-import { PatientTable } from "@/components/patients/PatientTable";
-import { RecentPatientsTable } from "@/components/patients/RecentPatientsTable";
-import { CriticalPatientsTable } from "@/components/patients/CriticalPatientsTable";
 import { usePatients } from "@/hooks/use-patients";
+import { AllPatientsTab } from "@/components/patients/tabs/AllPatientsTab";
+import { RecentVisitsTab } from "@/components/patients/tabs/RecentVisitsTab";
+import { CriticalConditionsTab } from "@/components/patients/tabs/CriticalConditionsTab";
 
 const Patients = () => {
   const [userData] = useState<{ name: string; role: string } | null>(
@@ -79,57 +78,27 @@ const Patients = () => {
           </TabsList>
           
           <TabsContent value="all" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Patient List</CardTitle>
-                <CardDescription>
-                  Manage your patient records
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <PatientTable 
-                  patients={filteredPatients}
-                  onView={handleViewPatient}
-                  onDelete={openDeleteDialog}
-                />
-              </CardContent>
-            </Card>
+            <AllPatientsTab
+              patients={filteredPatients}
+              onView={handleViewPatient}
+              onDelete={openDeleteDialog}
+            />
           </TabsContent>
           
           <TabsContent value="recent" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Patient Visits</CardTitle>
-                <CardDescription>
-                  Patients who visited in the last 7 days
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RecentPatientsTable
-                  patients={filteredPatients}
-                  onView={handleViewPatient}
-                  onDelete={openDeleteDialog}
-                />
-              </CardContent>
-            </Card>
+            <RecentVisitsTab
+              patients={filteredPatients}
+              onView={handleViewPatient}
+              onDelete={openDeleteDialog}
+            />
           </TabsContent>
           
           <TabsContent value="critical" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Critical Conditions</CardTitle>
-                <CardDescription>
-                  Patients requiring immediate attention
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CriticalPatientsTable
-                  patients={filteredPatients}
-                  onView={handleViewPatient}
-                  onDelete={openDeleteDialog}
-                />
-              </CardContent>
-            </Card>
+            <CriticalConditionsTab
+              patients={filteredPatients}
+              onView={handleViewPatient}
+              onDelete={openDeleteDialog}
+            />
           </TabsContent>
         </Tabs>
       </div>
