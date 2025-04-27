@@ -13,11 +13,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { User, Shield, UserMd, Pharmacy } from "lucide-react";
 
 const LoginForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string>("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -33,37 +35,36 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedRole) {
+      toast({
+        title: "Role required",
+        description: "Please select a role to continue",
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
 
     try {
-      // This is a mock login - in a real app, you'd connect to an API
+      // Mock login - this should be replaced with actual authentication
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      // Simple validation
+      if (formData.email && formData.password) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ name: `${selectedRole} User`, role: selectedRole })
+        );
 
-      // For demo purposes, we'll use some hardcoded users
-      let userRole = "";
-      let userName = "";
+        toast({
+          title: "Login successful!",
+          description: `Welcome, ${selectedRole}`,
+        });
 
-      if (formData.email === "patient@example.com" && formData.password === "password") {
-        userRole = "Patient";
-        userName = "John Doe";
-      } else if (formData.email === "doctor@example.com" && formData.password === "password") {
-        userRole = "Doctor";
-        userName = "Dr. Sarah Smith";
-      } else if (formData.email === "admin@example.com" && formData.password === "password") {
-        userRole = "Admin";
-        userName = "Admin User";
+        navigate("/dashboard");
       } else {
         throw new Error("Invalid credentials");
       }
-
-      localStorage.setItem("user", JSON.stringify({ name: userName, role: userRole }));
-
-      toast({
-        title: "Login successful!",
-        description: `Welcome back, ${userName}`,
-      });
-
-      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Login failed",
@@ -75,16 +76,39 @@ const LoginForm = () => {
     }
   };
 
+  const roles = [
+    { id: "Patient", icon: User, label: "Patient Login" },
+    { id: "Doctor", icon: UserMd, label: "Doctor Login" },
+    { id: "Admin", icon: Shield, label: "Admin Login" },
+    { id: "Pharmacy", icon: Pharmacy, label: "Pharmacy Login" },
+  ];
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your credentials to access your account
+        <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
+        <CardDescription className="text-center">
+          Choose your role and login to your account
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
+          {/* Role Selection */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {roles.map((role) => (
+              <Button
+                key={role.id}
+                type="button"
+                variant={selectedRole === role.id ? "default" : "outline"}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+                onClick={() => setSelectedRole(role.id)}
+              >
+                <role.icon className="h-6 w-6" />
+                <span className="text-sm">{role.label}</span>
+              </Button>
+            ))}
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -99,22 +123,7 @@ const LoginForm = () => {
             />
           </div>
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Button
-                variant="link"
-                className="px-0 font-normal h-auto"
-                type="button"
-                onClick={() => {
-                  toast({
-                    title: "Password reset",
-                    description: "This feature is not implemented in the demo",
-                  });
-                }}
-              >
-                Forgot password?
-              </Button>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               name="password"
@@ -126,11 +135,11 @@ const LoginForm = () => {
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col">
+        <CardFooter className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Login"}
           </Button>
-          <div className="mt-4 text-center text-sm">
+          <div className="text-sm text-center text-muted-foreground">
             Don't have an account?{" "}
             <Button
               variant="link"
