@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { User, Shield, UserMd, Pharmacy } from "lucide-react";
+import { User, Shield } from "lucide-react";
+
+const defaultCredentials = {
+  Patient: { email: "patient@example.com", password: "patient123" },
+  Doctor: { email: "doctor@example.com", password: "doctor123" },
+  Admin: { email: "admin@example.com", password: "admin123" },
+  Pharmacy: { email: "pharmacy@example.com", password: "pharmacy123" },
+};
 
 const LoginForm = () => {
   const { toast } = useToast();
@@ -33,6 +39,15 @@ const LoginForm = () => {
     });
   };
 
+  const handleRoleSelect = (role: string) => {
+    setSelectedRole(role);
+    const defaultCred = defaultCredentials[role as keyof typeof defaultCredentials];
+    setFormData({
+      email: defaultCred.email,
+      password: defaultCred.password,
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRole) {
@@ -46,11 +61,9 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      // Mock login - this should be replaced with actual authentication
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Simple validation
-      if (formData.email && formData.password) {
+      // Check if the entered credentials match the default credentials for the selected role
+      const defaultCred = defaultCredentials[selectedRole as keyof typeof defaultCredentials];
+      if (formData.email === defaultCred.email && formData.password === defaultCred.password) {
         localStorage.setItem(
           "user",
           JSON.stringify({ name: `${selectedRole} User`, role: selectedRole })
@@ -61,7 +74,12 @@ const LoginForm = () => {
           description: `Welcome, ${selectedRole}`,
         });
 
-        navigate("/dashboard");
+        // Redirect based on role
+        if (selectedRole === "Pharmacy") {
+          navigate("/pharmacy");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         throw new Error("Invalid credentials");
       }
@@ -78,9 +96,9 @@ const LoginForm = () => {
 
   const roles = [
     { id: "Patient", icon: User, label: "Patient Login" },
-    { id: "Doctor", icon: UserMd, label: "Doctor Login" },
+    { id: "Doctor", icon: User, label: "Doctor Login" },
     { id: "Admin", icon: Shield, label: "Admin Login" },
-    { id: "Pharmacy", icon: Pharmacy, label: "Pharmacy Login" },
+    { id: "Pharmacy", icon: User, label: "Pharmacy Login" },
   ];
 
   return (
@@ -101,7 +119,7 @@ const LoginForm = () => {
                 type="button"
                 variant={selectedRole === role.id ? "default" : "outline"}
                 className="flex flex-col items-center gap-2 h-auto py-4"
-                onClick={() => setSelectedRole(role.id)}
+                onClick={() => handleRoleSelect(role.id)}
               >
                 <role.icon className="h-6 w-6" />
                 <span className="text-sm">{role.label}</span>

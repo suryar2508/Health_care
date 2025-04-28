@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -29,10 +28,13 @@ const Patients = () => {
     getPatientById 
   } = usePatients();
 
-  const filteredPatients = patientsList.filter(patient => 
-    patient.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    patient.condition.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Only filter if there's a search query
+  const filteredPatients = searchQuery 
+    ? patientsList.filter(patient => 
+        patient.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        patient.condition.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : patientsList; // Show all patients if no search query
 
   const handleViewPatient = (patientId: number) => {
     const patient = getPatientById(patientId);
@@ -117,7 +119,7 @@ const Patients = () => {
             setIsEditDialogOpen(false);
             setSelectedPatient(null);
           }}
-          onSubmit={(patientData) => updatePatient(selectedPatient.id, patientData)}
+          onSubmit={(data) => updatePatient(selectedPatient.id, data)}
           patient={selectedPatient}
           title={`Edit Patient: ${selectedPatient.name}`}
         />
