@@ -1,0 +1,11 @@
+ID,PatientID,DoctorID,MedicationID,DatePrescribed,Dosage,Frequency,Duration,Instructions,Refills,Status,PharmacyName,PharmacyAddress,PharmacyPhone,CreatedAt,UpdatedAt
+RX001,P001,D001,M001,2024-03-15,10mg,Once daily,30 days,Take one tablet daily in the morning,3,Active,CVS Pharmacy,123 Main St Boston MA 02108,+1-555-0301,2024-03-15T10:00:00Z,2024-03-15T10:00:00Z
+RX002,P002,D003,M002,2024-03-16,500mg,Twice daily,90 days,Take one tablet with breakfast and dinner,2,Active,Walgreens,456 Oak Ave Boston MA 02109,+1-555-0302,2024-03-16T11:30:00Z,2024-03-16T11:30:00Z
+RX003,P003,D002,M003,2024-03-17,20mg,Once daily,60 days,Take one tablet at bedtime,1,Active,Rite Aid,789 Pine St Boston MA 02110,+1-555-0303,2024-03-17T15:00:00Z,2024-03-17T15:00:00Z
+RX004,P004,D005,M004,2024-03-18,50mcg,Once daily,30 days,Take one tablet in the morning,3,Active,CVS Pharmacy,321 Elm St Boston MA 02111,+1-555-0304,2024-03-18T09:00:00Z,2024-03-18T09:00:00Z
+RX005,P005,D004,M005,2024-03-19,90mcg,As needed,30 days,Use inhaler as needed for shortness of breath,2,Active,Walgreens,654 Maple Dr Boston MA 02112,+1-555-0305,2024-03-19T10:30:00Z,2024-03-19T10:30:00Z
+RX006,P006,D007,M006,2024-03-20,20mg,Once daily,30 days,Take one tablet before breakfast,3,Active,Rite Aid,987 Cedar Ln Boston MA 02113,+1-555-0306,2024-03-20T11:00:00Z,2024-03-20T11:00:00Z
+RX007,P007,D006,M007,2024-03-21,50mg,Once daily,90 days,Take one tablet in the morning,2,Active,CVS Pharmacy,147 Birch Rd Boston MA 02114,+1-555-0307,2024-03-21T13:30:00Z,2024-03-21T13:30:00Z
+RX008,P008,D008,M008,2024-03-22,50mg,Twice daily,30 days,Take one tablet morning and evening,3,Active,Walgreens,258 Spruce St Boston MA 02115,+1-555-0308,2024-03-22T14:00:00Z,2024-03-22T14:00:00Z
+RX009,P009,D009,M009,2024-03-23,50mg,Once daily,30 days,Take one tablet daily,2,Active,Rite Aid,369 Oak Dr Boston MA 02116,+1-555-0309,2024-03-23T15:30:00Z,2024-03-23T15:30:00Z
+RX010,P010,D010,M010,2024-03-24,20mg,Once daily,30 days,Take one tablet at bedtime,3,Active,CVS Pharmacy,741 Pine Ave Boston MA 02117,+1-555-0310,2024-03-24T16:00:00Z,2024-03-24T16:00:00Z 

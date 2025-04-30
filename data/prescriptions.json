@@ -1,0 +1,64 @@
+{
+  "prescriptions": [
+    {
+      "id": "RX001",
+      "patientId": "P001",
+      "doctorId": "D001",
+      "medicationId": "M001",
+      "datePrescribed": "2024-03-15",
+      "dosage": "10mg",
+      "frequency": "Once daily",
+      "duration": "30 days",
+      "instructions": "Take one tablet daily in the morning",
+      "refills": 3,
+      "status": "Active",
+      "pharmacy": {
+        "name": "CVS Pharmacy",
+        "address": "123 Main St, Boston, MA 02108",
+        "phone": "+1-555-0301"
+      },
+      "createdAt": "2024-03-15T10:00:00Z",
+      "updatedAt": "2024-03-15T10:00:00Z"
+    },
+    {
+      "id": "RX002",
+      "patientId": "P002",
+      "doctorId": "D003",
+      "medicationId": "M002",
+      "datePrescribed": "2024-03-16",
+      "dosage": "500mg",
+      "frequency": "Twice daily",
+      "duration": "90 days",
+      "instructions": "Take one tablet with breakfast and dinner",
+      "refills": 2,
+      "status": "Active",
+      "pharmacy": {
+        "name": "Walgreens",
+        "address": "456 Oak Ave, Boston, MA 02109",
+        "phone": "+1-555-0302"
+      },
+      "createdAt": "2024-03-16T11:30:00Z",
+      "updatedAt": "2024-03-16T11:30:00Z"
+    },
+    {
+      "id": "RX003",
+      "patientId": "P003",
+      "doctorId": "D002",
+      "medicationId": "M003",
+      "datePrescribed": "2024-03-17",
+      "dosage": "20mg",
+      "frequency": "Once daily",
+      "duration": "60 days",
+      "instructions": "Take one tablet at bedtime",
+      "refills": 1,
+      "status": "Active",
+      "pharmacy": {
+        "name": "Rite Aid",
+        "address": "789 Pine St, Boston, MA 02110",
+        "phone": "+1-555-0303"
+      },
+      "createdAt": "2024-03-17T15:00:00Z",
+      "updatedAt": "2024-03-17T15:00:00Z"
+    }
+  ]
+} 

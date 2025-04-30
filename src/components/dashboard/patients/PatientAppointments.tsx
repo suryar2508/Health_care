@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format, isAfter, isBefore, isToday, parseISO, startOfDay } from 'date-fns';
-import { Calendar, Clock, User, FileText, Plus, Edit, Trash2, CheckCircle, XCircle, AlertCircle, CalendarDays, CalendarCheck, CalendarX, CalendarClock, Filter, Search, ChevronDown, ChevronUp, Bell, BellOff, BellRing, BarChart, Repeat } from 'lucide-react';
+import { Calendar, Clock, User, FileText, Plus, Edit, Trash2, CheckCircle, XCircle, AlertCircle, CalendarDays, CalendarCheck, CalendarX, CalendarClock, Filter, Search, ChevronDown, ChevronUp, Bell, BellOff, BellRing, BarChart, Repeat, Video, History, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { AppointmentExport } from './AppointmentExport';
 import { AppointmentCalendar } from './AppointmentCalendar';
 import { toast } from '@/components/ui/use-toast';
+import { AppointmentAnalytics } from './AppointmentAnalytics';
+import { DoctorAvailability } from './DoctorAvailability';
+import { AppointmentFeedback } from './AppointmentFeedback';
+import { AppointmentRescheduler } from './AppointmentRescheduler';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface PatientAppointmentsProps {
   patientId: string;
@@ -27,6 +32,9 @@ interface PatientAppointmentsProps {
   onAddAppointment: (appointment: Omit<Appointment, 'id'>) => void;
   onUpdateAppointment: (appointmentId: string, appointment: Partial<Appointment>) => void;
   onDeleteAppointment: (appointmentId: string) => void;
+  onSendReminder?: (appointmentId: string, reminderTime: string) => void;
+  onStartVideoConsultation?: (appointmentId: string) => void;
+  onLeaveFeedback?: (appointmentId: string, feedback: any) => void;
 }
 
 export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
@@ -34,7 +42,10 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
   appointments,
   onAddAppointment,
   onUpdateAppointment,
-  onDeleteAppointment
+  onDeleteAppointment,
+  onSendReminder,
+  onStartVideoConsultation,
+  onLeaveFeedback
 }) => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -62,12 +73,23 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
     location: '',
     attachments: [] as string[],
     tags: [] as string[],
+    videoConsultation: false,
+    videoLink: '',
+    feedback: null,
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [dismissedNotifications, setDismedNotifications] = useState<string[]>([]);
   const [snoozedNotifications, setSnoozedNotifications] = useState<Record<string, Date>>({});
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+  const [selectedAppointmentForFeedback, setSelectedAppointmentForFeedback] = useState<Appointment | null>(null);
+  const [showDoctorAvailability, setShowDoctorAvailability] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<{ id: string; name: string } | null>(null);
+  const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
+  const [selectedAppointmentForReschedule, setSelectedAppointmentForReschedule] = useState<Appointment | null>(null);
+  const [isRescheduling, setIsRescheduling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Filter appointments based on active tab
   const filteredAppointments = appointments.filter(appointment => {
@@ -218,6 +240,9 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
       location: '',
       attachments: [],
       tags: [],
+      videoConsultation: false,
+      videoLink: '',
+      feedback: null,
     });
   };
 
@@ -316,8 +341,90 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
     }));
   };
 
+  const handleSendReminder = (appointmentId: string) => {
+    if (onSendReminder) {
+      onSendReminder(appointmentId, formData.reminderTime);
+      toast({
+        title: 'Reminder Sent',
+        description: 'Appointment reminder has been sent successfully.',
+      });
+    }
+  };
+
+  const handleStartVideoConsultation = (appointmentId: string) => {
+    if (onStartVideoConsultation) {
+      onStartVideoConsultation(appointmentId);
+    }
+  };
+
+  const handleLeaveFeedback = (appointmentId: string, feedback: any) => {
+    if (onLeaveFeedback) {
+      onLeaveFeedback(appointmentId, feedback);
+      toast({
+        title: 'Feedback Submitted',
+        description: 'Thank you for your feedback.',
+      });
+    }
+  };
+
+  const handleFeedbackSubmit = (feedback: any) => {
+    if (selectedAppointmentForFeedback && onLeaveFeedback) {
+      onLeaveFeedback(selectedAppointmentForFeedback.id, feedback);
+      setShowFeedbackDialog(false);
+      setSelectedAppointmentForFeedback(null);
+    }
+  };
+
+  const handleSlotSelect = (date: string, slot: any) => {
+    setFormData(prev => ({
+      ...prev,
+      date,
+      time: slot.start,
+      duration: String((new Date(`2000-01-01T${slot.end}`).getTime() - new Date(`2000-01-01T${slot.start}`).getTime()) / (1000 * 60))
+    }));
+    setShowDoctorAvailability(false);
+    setIsAddDialogOpen(true);
+  };
+
+  const handleReschedule = async (newDate: string, newTime: string) => {
+    if (selectedAppointmentForReschedule) {
+      setIsRescheduling(true);
+      setError(null);
+      try {
+        await onUpdateAppointment(selectedAppointmentForReschedule.id, {
+          date: newDate,
+          time: newTime,
+          updatedAt: new Date().toISOString()
+        });
+        setShowRescheduleDialog(false);
+        setSelectedAppointmentForReschedule(null);
+        toast({
+          title: 'Appointment Rescheduled',
+          description: 'The appointment has been successfully rescheduled.',
+        });
+      } catch (err) {
+        setError('Failed to reschedule appointment. Please try again.');
+        toast({
+          title: 'Error',
+          description: 'Failed to reschedule appointment. Please try again.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsRescheduling(false);
+      }
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Appointments</h3>
         <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'list' | 'calendar')}>
@@ -327,9 +434,20 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
           </TabsList>
         </Tabs>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowStats(!showStats)}>
+            <BarChart className="h-4 w-4 mr-2" />
+            Analytics
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+            <Filter className="h-4 w-4 mr-2" />
+            Filters
+          </Button>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button>Add Appointment</Button>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Appointment
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -375,11 +493,23 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="doctor">Doctor</Label>
-                  <Input
-                    id="doctor"
-                    value={formData.doctor}
-                    onChange={(e) => setFormData(prev => ({ ...prev, doctor: e.target.value }))}
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="doctor"
+                      value={formData.doctor}
+                      onChange={(e) => setFormData(prev => ({ ...prev, doctor: e.target.value }))}
+                      placeholder="Doctor's name"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedDoctor({ id: '1', name: formData.doctor });
+                        setShowDoctorAvailability(true);
+                      }}
+                    >
+                      Check Availability
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="notes">Notes</Label>
@@ -437,7 +567,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                         <SelectItem value="15">15 minutes</SelectItem>
                         <SelectItem value="30">30 minutes</SelectItem>
                         <SelectItem value="60">1 hour</SelectItem>
-                        <SelectItem value="120">2 hours</SelectItem>
+                        <SelectItem value="1440">1 day</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -453,6 +583,17 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
           </Dialog>
         </div>
       </div>
+
+      {showStats && <AppointmentAnalytics appointments={appointments} />}
+
+      {showDoctorAvailability && selectedDoctor && (
+        <DoctorAvailability
+          doctorId={selectedDoctor.id}
+          doctorName={selectedDoctor.name}
+          availability={[]}
+          onSlotSelect={handleSlotSelect}
+        />
+      )}
 
       {viewMode === 'list' ? (
         <div className="grid gap-4">
@@ -501,6 +642,54 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                     </Button>
                   </div>
                 </div>
+                <div className="flex items-center gap-2 mt-2">
+                  {appointment.reminderEnabled && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSendReminder(appointment.id)}
+                    >
+                      <BellRing className="h-4 w-4 mr-2" />
+                      Send Reminder
+                    </Button>
+                  )}
+                  {appointment.videoConsultation && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleStartVideoConsultation(appointment.id)}
+                    >
+                      <Video className="h-4 w-4 mr-2" />
+                      Start Video
+                    </Button>
+                  )}
+                  {appointment.status === 'completed' && !appointment.feedback && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedAppointmentForFeedback(appointment);
+                        setShowFeedbackDialog(true);
+                      }}
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Leave Feedback
+                    </Button>
+                  )}
+                  {appointment.status === 'scheduled' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedAppointmentForReschedule(appointment);
+                        setShowRescheduleDialog(true);
+                      }}
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Reschedule
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -513,10 +702,49 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
         />
       )}
 
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog open={showFeedbackDialog} onOpenChange={setShowFeedbackDialog}>
+        <DialogContent>
+          {selectedAppointmentForFeedback && (
+            <AppointmentFeedback
+              appointment={selectedAppointmentForFeedback}
+              onSubmit={handleFeedbackSubmit}
+              onCancel={() => {
+                setShowFeedbackDialog(false);
+                setSelectedAppointmentForFeedback(null);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showRescheduleDialog} onOpenChange={setShowRescheduleDialog}>
+        <DialogContent>
+          {selectedAppointmentForReschedule && (
+            <AppointmentRescheduler
+              appointment={selectedAppointmentForReschedule}
+              existingAppointments={appointments}
+              onReschedule={handleReschedule}
+              onCancel={() => {
+                setShowRescheduleDialog(false);
+                setSelectedAppointmentForReschedule(null);
+                setError(null);
+              }}
+              isLoading={isRescheduling}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAddDialogOpen || isEditDialogOpen} onOpenChange={(open) => {
+        if (!open) {
+          setIsAddDialogOpen(false);
+          setIsEditDialogOpen(false);
+          resetForm();
+        }
+      }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Appointment</DialogTitle>
+            <DialogTitle>{isAddDialogOpen ? 'Add New Appointment' : 'Edit Appointment'}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">

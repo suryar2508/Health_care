@@ -34,12 +34,28 @@ export interface HealthMetric {
 
 export interface Appointment {
   id: string;
+  patientId: string;
+  doctorId: string;
   date: string;
   time: string;
-  type: 'Check-up' | 'Follow-up' | 'Consultation' | 'Emergency' | 'Procedure';
-  doctor: string;
-  status: 'Scheduled' | 'Completed' | 'Cancelled' | 'No-show';
+  type: 'checkup' | 'consultation' | 'follow-up' | 'emergency' | 'procedure';
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
   notes?: string;
   followUpRequired?: boolean;
   followUpDate?: string;
+  duration: string;
+  reminderEnabled?: boolean;
+  videoConsultation?: boolean;
+  feedback?: any;
+  createdAt?: string;
+  updatedAt?: string;
+  patient?: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  doctor?: {
+    name: string;
+    specialization: string;
+  };
 } 

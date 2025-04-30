@@ -1,0 +1,6 @@
+name,email,phone,age,gender,bloodGroup,address,emergencyContact,insuranceInfo,medicalHistory,assignedDoctor,status,username,password
+John Doe,john.doe@example.com,+1 234-567-8900,35,Male,A+,123 Main St, City, State,+1 987-654-3210,Health Insurance Co. #12345,Hypertension,Dr. Smith,active,john.doe,Patient@123
+Jane Smith,jane.smith@example.com,+1 234-567-8901,28,Female,O+,456 Oak Ave, City, State,+1 987-654-3211,Medical Insurance Co. #67890,Diabetes,Dr. Johnson,active,jane.smith,Patient@123
+Michael Brown,michael.brown@example.com,+1 234-567-8902,45,Male,B+,789 Pine Rd, City, State,+1 987-654-3212,Life Insurance Co. #13579,Asthma,Dr. Williams,active,michael.brown,Patient@123
+Sarah Wilson,sarah.wilson@example.com,+1 234-567-8903,32,Female,AB+,321 Elm St, City, State,+1 987-654-3213,Family Insurance Co. #24680,None,Dr. Davis,active,sarah.wilson,Patient@123
+David Lee,david.lee@example.com,+1 234-567-8904,50,Male,A-,654 Maple Dr, City, State,+1 987-654-3214,Senior Insurance Co. #35791,Heart Disease,Dr. Miller,active,david.lee,Patient@123 

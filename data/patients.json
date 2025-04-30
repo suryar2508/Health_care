@@ -1,0 +1,94 @@
+{
+  "patients": [
+    {
+      "id": "P001",
+      "firstName": "John",
+      "lastName": "Smith",
+      "dateOfBirth": "1980-05-15",
+      "gender": "Male",
+      "email": "john.smith@email.com",
+      "phone": "+1-555-0123",
+      "address": {
+        "street": "123 Main St",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02108"
+      },
+      "medicalHistory": {
+        "allergies": ["Penicillin", "Peanuts"],
+        "chronicConditions": ["Hypertension", "Type 2 Diabetes"],
+        "bloodType": "O+",
+        "emergencyContact": {
+          "name": "Mary Smith",
+          "relationship": "Spouse",
+          "phone": "+1-555-0124"
+        }
+      },
+      "insurance": {
+        "provider": "Blue Cross Blue Shield",
+        "policyNumber": "BCBS123456",
+        "groupNumber": "GRP789"
+      }
+    },
+    {
+      "id": "P002",
+      "firstName": "Sarah",
+      "lastName": "Johnson",
+      "dateOfBirth": "1992-08-23",
+      "gender": "Female",
+      "email": "sarah.j@email.com",
+      "phone": "+1-555-0125",
+      "address": {
+        "street": "456 Oak Ave",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02109"
+      },
+      "medicalHistory": {
+        "allergies": ["Sulfa drugs"],
+        "chronicConditions": ["Asthma"],
+        "bloodType": "A-",
+        "emergencyContact": {
+          "name": "Robert Johnson",
+          "relationship": "Father",
+          "phone": "+1-555-0126"
+        }
+      },
+      "insurance": {
+        "provider": "Aetna",
+        "policyNumber": "AET789012",
+        "groupNumber": "GRP456"
+      }
+    },
+    {
+      "id": "P003",
+      "firstName": "Michael",
+      "lastName": "Chen",
+      "dateOfBirth": "1975-11-30",
+      "gender": "Male",
+      "email": "m.chen@email.com",
+      "phone": "+1-555-0127",
+      "address": {
+        "street": "789 Pine St",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02110"
+      },
+      "medicalHistory": {
+        "allergies": ["Shellfish"],
+        "chronicConditions": ["Arthritis", "High Cholesterol"],
+        "bloodType": "B+",
+        "emergencyContact": {
+          "name": "Lisa Chen",
+          "relationship": "Spouse",
+          "phone": "+1-555-0128"
+        }
+      },
+      "insurance": {
+        "provider": "UnitedHealthcare",
+        "policyNumber": "UHC345678",
+        "groupNumber": "GRP123"
+      }
+    }
+  ]
+} 

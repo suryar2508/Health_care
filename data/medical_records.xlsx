@@ -1,0 +1,11 @@
+ID,PatientID,VisitDate,DoctorID,VisitType,ChiefComplaint,VitalSigns,Diagnosis,Treatment,FollowUpDate,Notes,CreatedAt,UpdatedAt
+MR001,P001,2024-03-15,D001,Regular Checkup,"Blood pressure concerns","BP: 140/90, HR: 72, Temp: 98.6","Hypertension Stage 1","Prescribed Lisinopril 10mg",2024-04-15,"Patient reports occasional dizziness",2024-03-15T09:00:00Z,2024-03-15T09:00:00Z
+MR002,P002,2024-03-16,D003,New Patient,"Annual checkup","BP: 120/80, HR: 68, Temp: 98.4","Healthy","No medication needed",2024-09-16,"First visit to the clinic",2024-03-16T10:30:00Z,2024-03-16T10:30:00Z
+MR003,P003,2024-03-17,D002,Consultation,"Frequent migraines","BP: 130/85, HR: 75, Temp: 98.5","Migraine with aura","Prescribed preventive medication",2024-04-17,"Patient reports 3-4 migraines per week",2024-03-17T14:00:00Z,2024-03-17T14:00:00Z
+MR004,P004,2024-03-18,D005,Follow-up,"Eczema flare-up","BP: 118/78, HR: 70, Temp: 98.3","Atopic dermatitis","Prescribed topical steroid",2024-04-18,"Patient reports improved sleep",2024-03-18T11:00:00Z,2024-03-18T11:00:00Z
+MR005,P005,2024-03-19,D004,Consultation,"Knee pain","BP: 135/88, HR: 76, Temp: 98.4","Osteoarthritis","Prescribed physical therapy",2024-04-19,"Patient reports pain with stairs",2024-03-19T15:30:00Z,2024-03-19T15:30:00Z
+MR006,P006,2024-03-20,D007,Follow-up,"Thyroid check","BP: 122/82, HR: 71, Temp: 98.5","Hypothyroidism","Adjusted medication dosage",2024-04-20,"TSH levels improved",2024-03-20T09:00:00Z,2024-03-20T09:00:00Z
+MR007,P007,2024-03-21,D006,Consultation,"Increased anxiety","BP: 128/84, HR: 80, Temp: 98.6","Generalized anxiety disorder","Prescribed Sertraline",2024-04-21,"Patient reports sleep disturbances",2024-03-21T10:00:00Z,2024-03-21T10:00:00Z
+MR008,P008,2024-03-22,D008,Follow-up,"Digestive issues","BP: 120/80, HR: 72, Temp: 98.4","IBS","Prescribed dietary changes",2024-04-22,"Patient reports reduced symptoms",2024-03-22T13:00:00Z,2024-03-22T13:00:00Z
+MR009,P009,2024-03-23,D009,New Patient,"Pregnancy checkup","BP: 118/76, HR: 74, Temp: 98.5","Normal pregnancy","Prescribed prenatal vitamins",2024-04-23,"First prenatal visit",2024-03-23T14:30:00Z,2024-03-23T14:30:00Z
+MR010,P010,2024-03-24,D010,Consultation,"Cancer screening","BP: 125/82, HR: 73, Temp: 98.4","Healthy","No abnormalities found",2024-09-24,"Regular screening completed",2024-03-24T16:00:00Z,2024-03-24T16:00:00Z 

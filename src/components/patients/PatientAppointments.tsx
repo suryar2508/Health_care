@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Calendar, Clock, User, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, User, FileText, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Appointment } from '@/types/patient';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface PatientAppointmentsProps {
   patientId: string;
@@ -31,6 +32,8 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Form states for adding/editing appointments
   const [formData, setFormData] = useState<Partial<Appointment>>({
@@ -66,53 +69,84 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
       : dateB.getTime() - dateA.getTime();
   });
 
-  const handleAddAppointment = () => {
-    if (!formData.date || !formData.time || !formData.type || !formData.doctor) {
-      return;
+  const handleAddAppointment = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      if (!formData.date || !formData.time || !formData.type || !formData.doctor) {
+        setError('Please fill in all required fields');
+        return;
+      }
+
+      const newAppointment: Appointment = {
+        id: `A${Date.now()}`,
+        date: formData.date,
+        time: formData.time,
+        type: formData.type as 'Check-up' | 'Follow-up' | 'Consultation' | 'Emergency' | 'Procedure',
+        doctor: formData.doctor,
+        status: formData.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-show',
+        notes: formData.notes,
+        followUpRequired: formData.followUpRequired,
+        followUpDate: formData.followUpDate
+      };
+
+      await onAddAppointment(newAppointment);
+      resetForm();
+      setIsAddDialogOpen(false);
+    } catch (err) {
+      setError('Failed to add appointment. Please try again.');
+      console.error('Error adding appointment:', err);
+    } finally {
+      setIsLoading(false);
     }
-
-    const newAppointment: Appointment = {
-      id: `A${Date.now()}`,
-      date: formData.date,
-      time: formData.time,
-      type: formData.type as 'Check-up' | 'Follow-up' | 'Consultation' | 'Emergency' | 'Procedure',
-      doctor: formData.doctor,
-      status: formData.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-show',
-      notes: formData.notes,
-      followUpRequired: formData.followUpRequired,
-      followUpDate: formData.followUpDate
-    };
-
-    onAddAppointment(newAppointment);
-    resetForm();
-    setIsAddDialogOpen(false);
   };
 
-  const handleEditAppointment = () => {
-    if (!selectedAppointment || !formData.date || !formData.time || !formData.type || !formData.doctor) {
-      return;
+  const handleEditAppointment = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      if (!selectedAppointment || !formData.date || !formData.time || !formData.type || !formData.doctor) {
+        setError('Please fill in all required fields');
+        return;
+      }
+
+      const updatedAppointment: Appointment = {
+        ...selectedAppointment,
+        date: formData.date,
+        time: formData.time,
+        type: formData.type as 'Check-up' | 'Follow-up' | 'Consultation' | 'Emergency' | 'Procedure',
+        doctor: formData.doctor,
+        status: formData.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-show',
+        notes: formData.notes,
+        followUpRequired: formData.followUpRequired,
+        followUpDate: formData.followUpDate
+      };
+
+      await onUpdateAppointment(selectedAppointment.id, updatedAppointment);
+      resetForm();
+      setIsEditDialogOpen(false);
+      setSelectedAppointment(null);
+    } catch (err) {
+      setError('Failed to update appointment. Please try again.');
+      console.error('Error updating appointment:', err);
+    } finally {
+      setIsLoading(false);
     }
-
-    const updatedAppointment: Appointment = {
-      ...selectedAppointment,
-      date: formData.date,
-      time: formData.time,
-      type: formData.type as 'Check-up' | 'Follow-up' | 'Consultation' | 'Emergency' | 'Procedure',
-      doctor: formData.doctor,
-      status: formData.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-show',
-      notes: formData.notes,
-      followUpRequired: formData.followUpRequired,
-      followUpDate: formData.followUpDate
-    };
-
-    onUpdateAppointment(selectedAppointment.id, updatedAppointment);
-    resetForm();
-    setIsEditDialogOpen(false);
-    setSelectedAppointment(null);
   };
 
-  const handleDeleteAppointment = (appointmentId: string) => {
-    onDeleteAppointment(appointmentId);
+  const handleDeleteAppointment = async (appointmentId: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await onDeleteAppointment(appointmentId);
+    } catch (err) {
+      setError('Failed to delete appointment. Please try again.');
+      console.error('Error deleting appointment:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const openEditDialog = (appointment: Appointment) => {
@@ -141,6 +175,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
       followUpRequired: false,
       followUpDate: ''
     });
+    setError(null);
   };
 
   const getStatusBadge = (status: string) => {
@@ -175,8 +210,24 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Appointments</h2>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -199,6 +250,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                   className="col-span-3"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  required
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -209,6 +261,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                   className="col-span-3"
                   value={formData.time}
                   onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                  required
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -236,6 +289,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                   className="col-span-3"
                   value={formData.doctor}
                   onChange={(e) => setFormData({ ...formData, doctor: e.target.value })}
+                  required
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -264,35 +318,13 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="followUpRequired" className="text-right">Follow-up</Label>
-                <div className="col-span-3 flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="followUpRequired"
-                    checked={formData.followUpRequired}
-                    onChange={(e) => setFormData({ ...formData, followUpRequired: e.target.checked })}
-                    className="h-4 w-4 rounded border-gray-300"
-                  />
-                  <Label htmlFor="followUpRequired">Follow-up required</Label>
-                </div>
-              </div>
-              {formData.followUpRequired && (
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="followUpDate" className="text-right">Follow-up Date</Label>
-                  <Input
-                    id="followUpDate"
-                    type="date"
-                    className="col-span-3"
-                    value={formData.followUpDate}
-                    onChange={(e) => setFormData({ ...formData, followUpDate: e.target.value })}
-                  />
-                </div>
-              )}
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleAddAppointment}>Add Appointment</Button>
+              <Button onClick={handleAddAppointment} disabled={isLoading}>
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Add Appointment
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -300,31 +332,26 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="upcoming">Upcoming Appointments</TabsTrigger>
-          <TabsTrigger value="past">Past Appointments</TabsTrigger>
+          <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+          <TabsTrigger value="past">Past</TabsTrigger>
         </TabsList>
+        
         <TabsContent value="upcoming" className="space-y-4">
-          {sortedAppointments.length === 0 ? (
-            <Card>
-              <CardContent className="py-6 text-center text-muted-foreground">
-                No upcoming appointments scheduled.
-              </CardContent>
-            </Card>
-          ) : (
+          {sortedAppointments.length > 0 ? (
             sortedAppointments.map((appointment) => (
               <Card key={appointment.id}>
-                <CardHeader className="pb-2">
+                <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-2">
                       {getTypeIcon(appointment.type)}
-                      <CardTitle className="text-lg">{appointment.type}</CardTitle>
+                      <CardTitle>{appointment.type}</CardTitle>
                     </div>
                     {getStatusBadge(appointment.status)}
                   </div>
                   <CardDescription>
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4" />
-                      <span>{format(new Date(appointment.date), 'EEEE, MMMM d, yyyy')}</span>
+                      <span>{format(new Date(appointment.date), 'MMMM d, yyyy')}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="h-4 w-4" />
@@ -332,12 +359,12 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                     </div>
                     <div className="flex items-center space-x-2">
                       <User className="h-4 w-4" />
-                      <span>{appointment.doctor}</span>
+                      <span>Dr. {appointment.doctor}</span>
                     </div>
                   </CardDescription>
                 </CardHeader>
                 {appointment.notes && (
-                  <CardContent className="pb-2">
+                  <CardContent>
                     <p className="text-sm text-muted-foreground">{appointment.notes}</p>
                   </CardContent>
                 )}
@@ -346,35 +373,36 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                     Edit
                   </Button>
                   <Button variant="destructive" size="sm" onClick={() => handleDeleteAppointment(appointment.id)}>
-                    Cancel
+                    Delete
                   </Button>
                 </CardFooter>
               </Card>
             ))
-          )}
-        </TabsContent>
-        <TabsContent value="past" className="space-y-4">
-          {sortedAppointments.length === 0 ? (
+          ) : (
             <Card>
               <CardContent className="py-6 text-center text-muted-foreground">
-                No past appointments found.
+                No upcoming appointments.
               </CardContent>
             </Card>
-          ) : (
+          )}
+        </TabsContent>
+        
+        <TabsContent value="past" className="space-y-4">
+          {sortedAppointments.length > 0 ? (
             sortedAppointments.map((appointment) => (
               <Card key={appointment.id}>
-                <CardHeader className="pb-2">
+                <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-2">
                       {getTypeIcon(appointment.type)}
-                      <CardTitle className="text-lg">{appointment.type}</CardTitle>
+                      <CardTitle>{appointment.type}</CardTitle>
                     </div>
                     {getStatusBadge(appointment.status)}
                   </div>
                   <CardDescription>
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4" />
-                      <span>{format(new Date(appointment.date), 'EEEE, MMMM d, yyyy')}</span>
+                      <span>{format(new Date(appointment.date), 'MMMM d, yyyy')}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="h-4 w-4" />
@@ -382,38 +410,41 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                     </div>
                     <div className="flex items-center space-x-2">
                       <User className="h-4 w-4" />
-                      <span>{appointment.doctor}</span>
+                      <span>Dr. {appointment.doctor}</span>
                     </div>
                   </CardDescription>
                 </CardHeader>
                 {appointment.notes && (
-                  <CardContent className="pb-2">
+                  <CardContent>
                     <p className="text-sm text-muted-foreground">{appointment.notes}</p>
                   </CardContent>
                 )}
-                {appointment.followUpRequired && appointment.followUpDate && (
-                  <CardFooter className="flex justify-between items-center">
-                    <div className="text-sm text-muted-foreground">
-                      Follow-up scheduled for {format(new Date(appointment.followUpDate), 'MMMM d, yyyy')}
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => openEditDialog(appointment)}>
-                      Edit
-                    </Button>
-                  </CardFooter>
-                )}
+                <CardFooter className="flex justify-end space-x-2">
+                  <Button variant="outline" size="sm" onClick={() => openEditDialog(appointment)}>
+                    Edit
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={() => handleDeleteAppointment(appointment.id)}>
+                    Delete
+                  </Button>
+                </CardFooter>
               </Card>
             ))
+          ) : (
+            <Card>
+              <CardContent className="py-6 text-center text-muted-foreground">
+                No past appointments.
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
       </Tabs>
 
-      {/* Edit Appointment Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Edit Appointment</DialogTitle>
             <DialogDescription>
-              Update appointment details.
+              Update the appointment details.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -425,6 +456,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                 className="col-span-3"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -435,6 +467,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                 className="col-span-3"
                 value={formData.time}
                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -462,6 +495,7 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                 className="col-span-3"
                 value={formData.doctor}
                 onChange={(e) => setFormData({ ...formData, doctor: e.target.value })}
+                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -490,35 +524,13 @@ export const PatientAppointments: React.FC<PatientAppointmentsProps> = ({
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="edit-followUpRequired" className="text-right">Follow-up</Label>
-              <div className="col-span-3 flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="edit-followUpRequired"
-                  checked={formData.followUpRequired}
-                  onChange={(e) => setFormData({ ...formData, followUpRequired: e.target.checked })}
-                  className="h-4 w-4 rounded border-gray-300"
-                />
-                <Label htmlFor="edit-followUpRequired">Follow-up required</Label>
-              </div>
-            </div>
-            {formData.followUpRequired && (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-followUpDate" className="text-right">Follow-up Date</Label>
-                <Input
-                  id="edit-followUpDate"
-                  type="date"
-                  className="col-span-3"
-                  value={formData.followUpDate}
-                  onChange={(e) => setFormData({ ...formData, followUpDate: e.target.value })}
-                />
-              </div>
-            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleEditAppointment}>Save Changes</Button>
+            <Button onClick={handleEditAppointment} disabled={isLoading}>
+              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Save Changes
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
