@@ -1,0 +1,11 @@
+ID,PatientID,AppointmentID,ServiceDate,ServiceType,Provider,Amount,InsuranceCoverage,PatientResponsibility,PaymentStatus,PaymentDate,PaymentMethod,Notes,CreatedAt,UpdatedAt
+B001,P001,A001,2024-03-20,Consultation,Dr. Emily Brown,150.00,120.00,30.00,Paid,2024-03-20,Credit Card,"Insurance processed",2024-03-15T09:00:00Z,2024-03-20T10:00:00Z
+B002,P002,A002,2024-03-21,New Patient,Dr. Maria Garcia,200.00,160.00,40.00,Paid,2024-03-21,Debit Card,"First visit",2024-03-16T10:30:00Z,2024-03-21T14:30:00Z
+B003,P003,A003,2024-03-22,Specialist,Dr. James Wilson,250.00,200.00,50.00,Paid,2024-03-22,Credit Card,"Specialist consultation",2024-03-17T14:00:00Z,2024-03-22T11:15:00Z
+B004,P004,A004,2024-03-23,Follow-up,Dr. Sarah Patel,100.00,80.00,20.00,Paid,2024-03-23,Cash,"Follow-up visit",2024-03-18T11:00:00Z,2024-03-23T09:00:00Z
+B005,P005,A005,2024-03-24,Specialist,Dr. Robert Kim,250.00,200.00,50.00,Paid,2024-03-24,Credit Card,"Orthopedic consultation",2024-03-19T15:30:00Z,2024-03-24T13:45:00Z
+B006,P006,A006,2024-03-25,Follow-up,Dr. Lisa Chen,100.00,80.00,20.00,Paid,2024-03-25,Debit Card,"Thyroid check",2024-03-20T09:00:00Z,2024-03-25T10:30:00Z
+B007,P007,A007,2024-03-26,Specialist,Dr. Michael Thompson,250.00,200.00,50.00,Paid,2024-03-26,Credit Card,"Psychiatric consultation",2024-03-21T10:00:00Z,2024-03-26T14:00:00Z
+B008,P008,A008,2024-03-27,Follow-up,Dr. David Martinez,100.00,80.00,20.00,Paid,2024-03-27,Cash,"IBS follow-up",2024-03-22T13:00:00Z,2024-03-27T11:30:00Z
+B009,P009,A009,2024-03-28,New Patient,Dr. Jennifer Anderson,200.00,160.00,40.00,Paid,2024-03-28,Debit Card,"First prenatal visit",2024-03-23T14:30:00Z,2024-03-28T09:45:00Z
+B010,P010,A010,2024-03-29,Specialist,Dr. William Johnson,300.00,240.00,60.00,Paid,2024-03-29,Credit Card,"Cancer screening",2024-03-24T16:00:00Z,2024-03-29T15:00:00Z 

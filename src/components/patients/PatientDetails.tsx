@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { X, Calendar, Phone, MapPin, Droplet, Activity, FileText, Clock } from 'lucide-react';
+import { X, Calendar, Phone, MapPin, Droplet, Activity, FileText, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Patient, HealthMetric } from '@/types/patient';
 import { WeeklyHealthMetrics } from '@/components/dashboard/overview/WeeklyHealthMetrics';
 import { PatientAppointments } from './PatientAppointments';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface PatientDetailsProps {
   patient: Patient;
@@ -26,42 +27,86 @@ export const PatientDetails: React.FC<PatientDetailsProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [healthMetrics, setHealthMetrics] = useState<HealthMetric[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Generate sample health metrics for the patient
-    const generateHealthMetrics = () => {
-      const metrics: HealthMetric[] = [];
-      const today = new Date();
-      
-      // Generate 7 days of health metrics
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
         
-        // Generate random values within normal ranges
-        const systolic = Math.floor(Math.random() * 20) + 110; // 110-130
-        const diastolic = Math.floor(Math.random() * 10) + 70; // 70-80
-        const heartRate = Math.floor(Math.random() * 20) + 60; // 60-80
-        const bloodOxygen = Math.floor(Math.random() * 3) + 97; // 97-99
-        const temperature = (Math.random() * 0.4 + 36.5).toFixed(1); // 36.5-36.9
+        // Generate sample health metrics for the patient
+        const generateHealthMetrics = () => {
+          const metrics: HealthMetric[] = [];
+          const today = new Date();
+          
+          // Generate 7 days of health metrics
+          for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            // Generate random values within normal ranges
+            const systolic = Math.floor(Math.random() * 20) + 110; // 110-130
+            const diastolic = Math.floor(Math.random() * 10) + 70; // 70-80
+            const heartRate = Math.floor(Math.random() * 20) + 60; // 60-80
+            const bloodOxygen = Math.floor(Math.random() * 3) + 97; // 97-99
+            const temperature = (Math.random() * 0.4 + 36.5).toFixed(1); // 36.5-36.9
+            
+            metrics.push({
+              date: date.toISOString(),
+              bloodPressure: { systolic, diastolic },
+              heartRate,
+              bloodOxygen,
+              temperature: parseFloat(temperature)
+            });
+          }
+          
+          setHealthMetrics(metrics);
+        };
         
-        metrics.push({
-          date: date.toISOString(),
-          bloodPressure: { systolic, diastolic },
-          heartRate,
-          bloodOxygen,
-          temperature: parseFloat(temperature)
-        });
+        generateHealthMetrics();
+      } catch (err) {
+        setError('Failed to load patient data. Please try again.');
+        console.error('Error loading patient data:', err);
+      } finally {
+        setIsLoading(false);
       }
-      
-      setHealthMetrics(metrics);
     };
-    
-    generateHealthMetrics();
+
+    loadData();
   }, [patient]);
 
   // Get the latest health metrics
   const latestMetrics = healthMetrics.length > 0 ? healthMetrics[0] : null;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (!patient) {
+    return (
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>No Patient Data</AlertTitle>
+        <AlertDescription>No patient information is available.</AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className="space-y-6">

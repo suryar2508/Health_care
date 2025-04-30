@@ -1,0 +1,46 @@
+{
+  "appointments": [
+    {
+      "id": "A001",
+      "patientId": "P001",
+      "doctorId": "D001",
+      "date": "2024-03-20",
+      "time": "10:00",
+      "duration": 30,
+      "type": "Follow-up",
+      "status": "Scheduled",
+      "reason": "Blood pressure check",
+      "notes": "Patient reports occasional dizziness",
+      "createdAt": "2024-03-15T09:00:00Z",
+      "updatedAt": "2024-03-15T09:00:00Z"
+    },
+    {
+      "id": "A002",
+      "patientId": "P002",
+      "doctorId": "D003",
+      "date": "2024-03-21",
+      "time": "14:30",
+      "duration": 45,
+      "type": "New Patient",
+      "status": "Scheduled",
+      "reason": "Annual checkup",
+      "notes": "First visit to the clinic",
+      "createdAt": "2024-03-16T10:30:00Z",
+      "updatedAt": "2024-03-16T10:30:00Z"
+    },
+    {
+      "id": "A003",
+      "patientId": "P003",
+      "doctorId": "D002",
+      "date": "2024-03-22",
+      "time": "11:15",
+      "duration": 60,
+      "type": "Consultation",
+      "status": "Scheduled",
+      "reason": "Headache evaluation",
+      "notes": "Patient reports frequent migraines",
+      "createdAt": "2024-03-17T14:00:00Z",
+      "updatedAt": "2024-03-17T14:00:00Z"
+    }
+  ]
+} 

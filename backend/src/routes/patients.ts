@@ -1,0 +1,28 @@
+import express from 'express';
+import { auth } from '../middleware/auth';
+import {
+  getAllPatients,
+  getPatientById,
+  createPatient,
+  updatePatient,
+  deletePatient,
+} from '../controllers/patientController';
+
+const router = express.Router();
+
+// Get all patients (admin only)
+router.get('/', auth(['admin']), getAllPatients);
+
+// Get patient by ID
+router.get('/:id', auth(['admin', 'doctor', 'patient']), getPatientById);
+
+// Create new patient
+router.post('/', auth(['admin']), createPatient);
+
+// Update patient
+router.put('/:id', auth(['admin', 'doctor']), updatePatient);
+
+// Delete patient
+router.delete('/:id', auth(['admin']), deletePatient);
+
+export default router; 

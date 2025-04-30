@@ -1,0 +1,100 @@
+{
+  "medications": [
+    {
+      "id": "M001",
+      "name": "Lisinopril",
+      "genericName": "Lisinopril",
+      "type": "ACE Inhibitor",
+      "category": "Antihypertensive",
+      "dosage": {
+        "standard": "10mg",
+        "available": ["5mg", "10mg", "20mg", "40mg"],
+        "frequency": "Once daily",
+        "route": "Oral"
+      },
+      "sideEffects": [
+        "Dry cough",
+        "Dizziness",
+        "Headache",
+        "Fatigue"
+      ],
+      "contraindications": [
+        "Pregnancy",
+        "History of angioedema",
+        "Severe kidney disease"
+      ],
+      "interactions": [
+        "NSAIDs",
+        "Lithium",
+        "Potassium supplements"
+      ],
+      "storage": "Store at room temperature",
+      "manufacturer": "AstraZeneca",
+      "prescriptionRequired": true
+    },
+    {
+      "id": "M002",
+      "name": "Metformin",
+      "genericName": "Metformin Hydrochloride",
+      "type": "Biguanide",
+      "category": "Antidiabetic",
+      "dosage": {
+        "standard": "500mg",
+        "available": ["500mg", "850mg", "1000mg"],
+        "frequency": "Twice daily",
+        "route": "Oral"
+      },
+      "sideEffects": [
+        "Nausea",
+        "Diarrhea",
+        "Abdominal pain",
+        "Metallic taste"
+      ],
+      "contraindications": [
+        "Severe kidney disease",
+        "Metabolic acidosis",
+        "Heart failure"
+      ],
+      "interactions": [
+        "Contrast media",
+        "Alcohol",
+        "Certain antibiotics"
+      ],
+      "storage": "Store at room temperature",
+      "manufacturer": "Merck",
+      "prescriptionRequired": true
+    },
+    {
+      "id": "M003",
+      "name": "Atorvastatin",
+      "genericName": "Atorvastatin Calcium",
+      "type": "Statin",
+      "category": "Antilipemic",
+      "dosage": {
+        "standard": "20mg",
+        "available": ["10mg", "20mg", "40mg", "80mg"],
+        "frequency": "Once daily",
+        "route": "Oral"
+      },
+      "sideEffects": [
+        "Muscle pain",
+        "Liver problems",
+        "Digestive issues",
+        "Headache"
+      ],
+      "contraindications": [
+        "Active liver disease",
+        "Pregnancy",
+        "Breastfeeding"
+      ],
+      "interactions": [
+        "Grapefruit juice",
+        "Certain antibiotics",
+        "Antifungal medications"
+      ],
+      "storage": "Store at room temperature",
+      "manufacturer": "Pfizer",
+      "prescriptionRequired": true
+    }
+  ]
+} 

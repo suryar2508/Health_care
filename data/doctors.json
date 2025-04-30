@@ -1,0 +1,76 @@
+{
+  "doctors": [
+    {
+      "id": "D001",
+      "firstName": "Dr. Emily",
+      "lastName": "Brown",
+      "specialty": "Cardiology",
+      "email": "emily.brown@hospital.com",
+      "phone": "+1-555-0201",
+      "licenseNumber": "MD123456",
+      "education": {
+        "medicalSchool": "Harvard Medical School",
+        "graduationYear": 2010,
+        "residency": "Massachusetts General Hospital",
+        "fellowship": "Johns Hopkins Hospital"
+      },
+      "availability": {
+        "monday": ["09:00-12:00", "14:00-17:00"],
+        "tuesday": ["09:00-12:00", "14:00-17:00"],
+        "wednesday": ["09:00-12:00"],
+        "thursday": ["09:00-12:00", "14:00-17:00"],
+        "friday": ["09:00-12:00"]
+      },
+      "languages": ["English", "Spanish"],
+      "department": "Cardiology"
+    },
+    {
+      "id": "D002",
+      "firstName": "Dr. James",
+      "lastName": "Wilson",
+      "specialty": "Neurology",
+      "email": "james.wilson@hospital.com",
+      "phone": "+1-555-0202",
+      "licenseNumber": "MD234567",
+      "education": {
+        "medicalSchool": "Yale School of Medicine",
+        "graduationYear": 2012,
+        "residency": "Mayo Clinic",
+        "fellowship": "Stanford Medical Center"
+      },
+      "availability": {
+        "monday": ["10:00-13:00", "15:00-18:00"],
+        "tuesday": ["10:00-13:00"],
+        "wednesday": ["10:00-13:00", "15:00-18:00"],
+        "thursday": ["10:00-13:00"],
+        "friday": ["10:00-13:00", "15:00-18:00"]
+      },
+      "languages": ["English", "French"],
+      "department": "Neurology"
+    },
+    {
+      "id": "D003",
+      "firstName": "Dr. Maria",
+      "lastName": "Garcia",
+      "specialty": "Pediatrics",
+      "email": "maria.garcia@hospital.com",
+      "phone": "+1-555-0203",
+      "licenseNumber": "MD345678",
+      "education": {
+        "medicalSchool": "Stanford School of Medicine",
+        "graduationYear": 2015,
+        "residency": "Children's Hospital of Philadelphia",
+        "fellowship": "Boston Children's Hospital"
+      },
+      "availability": {
+        "monday": ["08:00-12:00"],
+        "tuesday": ["08:00-12:00", "14:00-18:00"],
+        "wednesday": ["08:00-12:00"],
+        "thursday": ["08:00-12:00", "14:00-18:00"],
+        "friday": ["08:00-12:00"]
+      },
+      "languages": ["English", "Spanish", "Portuguese"],
+      "department": "Pediatrics"
+    }
+  ]
+} 

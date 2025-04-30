@@ -1,0 +1,11 @@
+ID,PatientID,DoctorID,Date,Time,Duration,Type,Status,Reason,Notes,CreatedAt,UpdatedAt
+A001,P001,D001,2024-03-20,10:00,30,Follow-up,Scheduled,Blood pressure check,Patient reports occasional dizziness,2024-03-15T09:00:00Z,2024-03-15T09:00:00Z
+A002,P002,D003,2024-03-21,14:30,45,New Patient,Scheduled,Annual checkup,First visit to the clinic,2024-03-16T10:30:00Z,2024-03-16T10:30:00Z
+A003,P003,D002,2024-03-22,11:15,60,Consultation,Scheduled,Headache evaluation,Patient reports frequent migraines,2024-03-17T14:00:00Z,2024-03-17T14:00:00Z
+A004,P004,D005,2024-03-23,09:00,30,Follow-up,Scheduled,Skin condition check,Follow-up for eczema treatment,2024-03-18T11:00:00Z,2024-03-18T11:00:00Z
+A005,P005,D004,2024-03-24,13:45,60,Consultation,Scheduled,Joint pain evaluation,Patient reports knee pain,2024-03-19T15:30:00Z,2024-03-19T15:30:00Z
+A006,P006,D007,2024-03-25,10:30,45,Follow-up,Scheduled,Thyroid check,Regular thyroid function monitoring,2024-03-20T09:00:00Z,2024-03-20T09:00:00Z
+A007,P007,D006,2024-03-26,14:00,60,Consultation,Scheduled,Anxiety evaluation,Patient reports increased anxiety,2024-03-21T10:00:00Z,2024-03-21T10:00:00Z
+A008,P008,D008,2024-03-27,11:30,45,Follow-up,Scheduled,Digestive issues,Follow-up for IBS treatment,2024-03-22T13:00:00Z,2024-03-22T13:00:00Z
+A009,P009,D009,2024-03-28,09:45,30,New Patient,Scheduled,Pregnancy checkup,First prenatal visit,2024-03-23T14:30:00Z,2024-03-23T14:30:00Z
+A010,P010,D010,2024-03-29,15:00,60,Consultation,Scheduled,Cancer screening,Regular cancer screening appointment,2024-03-24T16:00:00Z,2024-03-24T16:00:00Z 
