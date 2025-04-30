@@ -1,0 +1,23 @@
+{
+  "name": "smartvital-healthcare",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "Health_care",
+    "Health_care/backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd Health_care && npm run dev",
+    "dev:backend": "cd Health_care/backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd Health_care && npm run build",
+    "build:backend": "cd Health_care/backend && npm run build",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "cd Health_care && npm run preview",
+    "start:backend": "cd Health_care/backend && npm run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
